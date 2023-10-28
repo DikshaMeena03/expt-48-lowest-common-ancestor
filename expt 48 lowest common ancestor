@@ -1,0 +1,62 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* leftChild;
+    Node* rightChild;
+};
+
+Node* newNode(int data) {
+    Node* newNode = new Node;
+    newNode->data = data;
+    newNode->leftChild = nullptr;
+    newNode->rightChild = nullptr;
+    return newNode;
+}
+
+Node* findLCA(Node* root, int node1, int node2) {
+    if (root == nullptr)
+        return nullptr;
+
+    // If the root matches either of the nodes, return the root
+    if (root->data == node1 || root->data == node2)
+        return root;
+
+    // Recursively find LCA in the left and right subtrees
+    Node* leftLCA = findLCA(root->leftChild, node1, node2);
+    Node* rightLCA = findLCA(root->rightChild, node1, node2);
+
+    // If both left and right LCA are not null, it means the two nodes are in different subtrees,
+    // so the current root is the LCA
+    if (leftLCA != nullptr && rightLCA != nullptr)
+        return root;
+
+    // If either left or right LCA is not null, it means the two nodes are in the same subtree,
+    // so return the non-null LCA
+    if (leftLCA != nullptr)
+        return leftLCA;
+    else
+        return rightLCA;
+}
+
+int main() {
+    Node* root = newNode(1);
+    root->leftChild = newNode(2);
+    root->rightChild = newNode(3);
+    root->leftChild->leftChild = newNode(4);
+    root->leftChild->rightChild = newNode(5);
+    root->rightChild->leftChild = newNode(6);
+    root->rightChild->rightChild = newNode(7);
+
+    int node1 = 4;
+    int node2 = 5;
+    Node* lca = findLCA(root, node1, node2);
+
+    if (lca != nullptr)
+        cout << "Lowest Common Ancestor of " << node1 << " and " << node2 << " is: " << lca->data << endl;
+    else
+        cout << "Lowest Common Ancestor of " << node1 << " and " << node2 << " not found." << endl;
+
+    return 0;
+}
